@@ -1,0 +1,40 @@
+@startuml
+title Flowchart Algoritma Fuzzy C-Means (FCM)
+
+' Mengatur gaya visual dengan parameter yang valid di PlantUML
+skinparam handwritten false
+skinparam ActivityBackgroundColor #02b676
+skinparam ActivityBorderColor #02b676
+skinparam ActivityFontColor #FFFFFF
+skinparam ArrowColor #333333
+skinparam BorderColor #333333
+skinparam BackgroundColor #FFFFFF
+
+start
+
+:Inisialisasi:
+1. Tentukan jumlah cluster (c)
+2. Tentukan parameter fuzziness (m)
+3. Bangkitkan Matriks Keanggotaan U (secara acak);
+
+' Menggunakan loop 'repeat' lebih intuitif untuk iterasi
+repeat
+    :Langkah 1:
+    Hitung Pusat Cluster (Centroid) baru V
+    (berdasarkan U dan m);
+
+    :Langkah 2:
+    Update Matriks Keanggotaan U
+    (berdasarkan Centroid V baru);
+
+' Kondisi pengecekan
+repeat while (Perubahan U masih besar? (Belum Konvergen)) is (Ya)
+-> (Tidak, Sudah Konvergen);
+
+:Selesai:
+Hasil akhir:
+Pusat Cluster V dan Matriks U final;
+
+stop
+
+@enduml

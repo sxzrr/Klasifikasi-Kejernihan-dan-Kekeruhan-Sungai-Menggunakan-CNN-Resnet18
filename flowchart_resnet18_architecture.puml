@@ -1,0 +1,43 @@
+@startuml ResNet18_Architecture
+
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam RectangleBorderColor #333333
+skinparam RectangleBackgroundColor #FFFFFF
+skinparam ArrowColor #333333
+skinparam DefaultFontName Arial
+skinparam DefaultFontSize 11
+
+title **Arsitektur ResNet18 - Klasifikasi Kekeruhan Sungai**
+
+|#FFFFFF|
+
+(Start) --> [Input Layer\n(224×224×3)]
+
+[Input Layer\n(224×224×3)] --> [ResNet18\n(Pre-trained ImageNet)]
+
+[ResNet18\n(Pre-trained ImageNet)] --> [Convolutional Layer\nFilter: 64, kernel 7×7\nstride 2, padding 3\nactivation: ReLU, BatchNorm]
+
+[Convolutional Layer\nFilter: 64, kernel 7×7\nstride 2, padding 3\nactivation: ReLU, BatchNorm] --> [Pooling Layer 1\nType: MaxPool\npool_size=3, stride=2\npadding=1]
+
+[Pooling Layer 1\nType: MaxPool\npool_size=3, stride=2\npadding=1] --> [Conv Block Layer1\n2× BasicBlock, Filter: 64\nkernel 3×3, padding=1\nReLU + Skip Connection]
+
+[Conv Block Layer1\n2× BasicBlock, Filter: 64\nkernel 3×3, padding=1\nReLU + Skip Connection] --> [Conv Block Layer2\n2× BasicBlock, Filter: 128\nkernel 3×3, stride 2\nReLU + Skip Connection]
+
+[Conv Block Layer2\n2× BasicBlock, Filter: 128\nkernel 3×3, stride 2\nReLU + Skip Connection] --> [Conv Block Layer3\n2× BasicBlock, Filter: 256\nkernel 3×3, stride 2\nReLU + Skip Connection]
+
+[Conv Block Layer3\n2× BasicBlock, Filter: 256\nkernel 3×3, stride 2\nReLU + Skip Connection] --> [Conv Block Layer4\n2× BasicBlock, Filter: 512\nkernel 3×3, stride 2\nReLU + Skip Connection]
+
+[Conv Block Layer4\n2× BasicBlock, Filter: 512\nkernel 3×3, stride 2\nReLU + Skip Connection] --> [Pooling Layer 2\nType: AdaptiveAvgPool\noutput: 1×1]
+
+[Pooling Layer 2\nType: AdaptiveAvgPool\noutput: 1×1] --> [Flatten Layer\n512 × 1 × 1 → 512]
+
+[Flatten Layer\n512 × 1 × 1 → 512] --> [Dense Layer 1\nUnit: 256\nactivation: ReLU]
+
+[Dense Layer 1\nUnit: 256\nactivation: ReLU] --> [Dropout Layer\nrate: 0.5]
+
+[Dropout Layer\nrate: 0.5] --> [Dense Layer 2\nUnit: 2\n(Jernih / Keruh)]
+
+[Dense Layer 2\nUnit: 2\n(Jernih / Keruh)] --> (End)
+
+@enduml

@@ -1,0 +1,8 @@
+Filename,Prediction,Confidence,Model
+1.jpeg,Turbid (Keruh),0.7268,xceptionnet
+2.jpeg,Clear (Jernih),1.0000,xceptionnet
+3.avif,Clear (Jernih),1.0000,xceptionnet
+4.jpeg,Clear (Jernih),0.9998,xceptionnet
+5.jpg,Clear (Jernih),1.0000,xceptionnet
+6.jpeg,Clear (Jernih),0.9216,xceptionnet
+7.jpg,Turbid (Keruh),1.0000,xceptionnet

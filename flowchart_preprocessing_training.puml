@@ -1,0 +1,187 @@
+@startuml Flowchart_Preprocessing_Training_ResNet18
+
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam ActivityBackgroundColor #E8F4FD
+skinparam ActivityBorderColor #2196F3
+skinparam ActivityDiamondBackgroundColor #FFF9C4
+skinparam ActivityDiamondBorderColor #F9A825
+skinparam ArrowColor #455A64
+skinparam NoteBorderColor #90A4AE
+skinparam NoteBackgroundColor #F5F5F5
+skinparam PartitionBorderColor #1565C0
+skinparam PartitionBackgroundColor #E3F2FD
+skinparam TitleFontSize 18
+
+title **Flowchart Klasifikasi Kekeruhan Sungai\n(Preprocessing + Training ResNet18 - Best Practice)**
+
+|#E3F2FD| **1_Preprocessing_NEW.ipynb** |
+
+start
+
+:**Step 0: Import Libraries**
+- NumPy, OpenCV, PIL
+- sklearn (train_test_split)
+- pathlib, json, random;
+
+:**Step 1: Load Original Images**
+- Source: //datasetScrap3///
+- Format: .jpg / .png
+- Label: **jernih** = 0 (Clear)
+          **keruh** = 1 (Turbid)
+- Total: **233 gambar asli**;
+
+:**Step 2: Preprocess Images**
+- BGR → RGB (cv2.cvtColor)
+- Resize → **224 × 224** px
+- Normalize → **[0, 1]** (float32 / 255);
+
+:**Step 3: Load All Images**
+- Load semua gambar ke memori
+- Konversi ke NumPy array
+- Shape: (N, 224, 224, 3);
+
+:**Step 4: Split Dataset (70/15/15)**
+- **Stratified split** (random_state=42)
+- Split 1: 70% Train, 30% Temp
+- Split 2: 50/50 Temp → Val & Test;
+
+note right
+  **BEST PRACTICE:**
+  Split **SEBELUM** augmentasi
+  → Tidak ada data leakage
+end note
+
+fork
+  :Train Set
+  **163 gambar** (original);
+fork again
+  :Val Set
+  **35 gambar** (original);
+fork again
+  :Test Set
+  **35 gambar** (original);
+end fork
+
+:**Step 5: Augmentasi HANYA Training Set**
+- 4× augmentasi per gambar
+- Total: 163 + (163 × 4) = **815 gambar**;
+
+note right
+  **Teknik Augmentasi:**
+  • Rotation ±15°
+  • Horizontal Flip (50%)
+  • Vertical Flip (50%)
+  • Brightness (0.7 – 1.3)
+  • Contrast (0.7 – 1.3)
+end note
+
+:**Step 6: Save Data (.npy)**
+- //data_processed_best_practice///
+  ├── train/ (images.npy, labels.npy)
+  ├── val/ (images.npy, labels.npy)
+  ├── test/ (images.npy, labels.npy)
+  └── metadata.json;
+
+:**Step 7: Verifikasi Data**
+- Train: **815** gambar (augmented)
+- Val: **35** gambar (original)
+- Test: **35** gambar (original)
+- Cek distribusi kelas;
+
+|#E8F5E9| **2_Training_ResNet18_NEW.ipynb** |
+
+:**Step 1: Import & Setup GPU**
+- PyTorch, torchvision
+- Device: **CUDA** (RTX 4070 Super)
+- VRAM: 12 GB;
+
+:**Step 2: Load Preprocessed Data**
+- Source: //data_processed_best_practice///
+- Load .npy → NumPy arrays
+- Train: 815 | Val: 35 | Test: 35;
+
+:**Step 3: ImageNet Normalization**
+- Mean: [0.485, 0.456, 0.406]
+- Std: [0.229, 0.224, 0.225]
+- Transpose: (N,H,W,C) → **(N,C,H,W)**
+- Convert → PyTorch Tensor (float32);
+
+:**Step 4: Create DataLoaders**
+- Batch Size: **32**
+- NUM_WORKERS: **4**
+- pin_memory: **True**
+- Train: shuffle=True
+- Val/Test: shuffle=False;
+
+:**Step 5: Build ResNet18 Model**
+- Pre-trained: **ImageNet** (1000 class)
+- Modify FC layer:
+  512 → 256 → ReLU → Dropout(0.5) → 2
+- Total params: **~11.7M**
+- Move to **CUDA**;
+
+:**Step 6: Training Configuration**
+- Loss: **CrossEntropyLoss**
+- Optimizer: **Adam** (lr=0.001, weight_decay=1e-4)
+- Scheduler: **ReduceLROnPlateau**
+  (factor=0.5, patience=3)
+- Epochs: **50**
+- Early Stopping: patience=**10**;
+
+repeat :Epoch 1 → 50;
+
+  partition "**Training Phase**" {
+    :model.train()
+    Forward pass → Loss
+    Backward pass → Update weights
+    Hitung Train Loss & Accuracy;
+  }
+
+  partition "**Validation Phase**" {
+    :model.eval() + torch.no_grad()
+    Forward pass → Loss
+    Hitung Val Loss & Accuracy;
+  }
+
+  :Update Learning Rate
+  (scheduler.step);
+
+  if (Val Accuracy **meningkat**?) then (Ya ✅)
+    :Simpan **Best Model**
+    (resnet18_best.pth)
+    Reset patience counter;
+  else (Tidak ❌)
+    :Increment patience counter
+    (counter += 1);
+  endif
+
+  if (Patience counter ≥ **10**?) then (Ya ⛔)
+    :Early Stopping!;
+    break
+  else (Tidak)
+  endif
+
+repeat while (Epoch selesai?) is (Belum) not (Sudah)
+
+:**Step 8: Save Model & Metadata**
+- Model: //resnet18_final_best_practice.pth//
+- Metadata: //resnet18_metadata_best_practice.json//
+  (history, config, results);
+
+:**Step 9: Plot Training History**
+- Loss curve (Train vs Val)
+- Accuracy curve (Train vs Val)
+- Save: //resnet18_training_history_best_practice.png//;
+
+note right
+  **Expected Output:**
+  • Best Val Accuracy
+  • Best Val Loss
+  • Total Epochs trained
+  • Training Time
+end note
+
+stop
+
+@enduml

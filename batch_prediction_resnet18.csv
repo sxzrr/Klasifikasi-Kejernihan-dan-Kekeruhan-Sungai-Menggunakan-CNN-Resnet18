@@ -1,0 +1,8 @@
+Filename,Prediction,Confidence,Model
+1.jpeg,Clear (Jernih),0.9622,resnet18
+2.jpeg,Clear (Jernih),1.0000,resnet18
+3.avif,Clear (Jernih),0.9886,resnet18
+4.jpeg,Clear (Jernih),0.9996,resnet18
+5.jpg,Clear (Jernih),1.0000,resnet18
+6.jpeg,Clear (Jernih),0.7336,resnet18
+7.jpg,Turbid (Keruh),1.0000,resnet18

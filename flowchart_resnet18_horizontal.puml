@@ -1,0 +1,42 @@
+@startuml ResNet18_Architecture_Horizontal
+
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam defaultTextAlignment center
+skinparam ArrowColor #333333
+skinparam RectangleBorderColor #333333
+skinparam RectangleBackgroundColor #FFFFFF
+skinparam EllipseBorderColor #333333
+skinparam EllipseBackgroundColor #FFFFFF
+skinparam DefaultFontName Arial
+skinparam DefaultFontSize 10
+skinparam Padding 5
+
+left to right direction
+
+rectangle "Start" as start #FFFFFF
+rectangle "Input Layer\n(224×224×3)" as input #FFFFFF
+rectangle "ResNet18\n(Pre-trained\nImageNet)" as resnet #FFFFFF
+rectangle "Convolutional Layer\nFilter: 64, kernel 7×7\nstride 2, padding 3\nactivation: ReLU\nBatchNorm" as conv1 #FFFFFF
+rectangle "Pooling Layer 1\nType: MaxPool\npool_size=3\nstride=2, padding=1" as pool1 #FFFFFF
+rectangle "Conv Block ×4\nLayer1: 64 filters\nLayer2: 128 filters\nLayer3: 256 filters\nLayer4: 512 filters\nkernel 3×3, ReLU\n+ Skip Connection" as convblocks #FFFFFF
+rectangle "Pooling Layer 2\nType: AdaptiveAvgPool\noutput: 1×1" as pool2 #FFFFFF
+rectangle "Flatten Layer\n512" as flatten #FFFFFF
+rectangle "Dense Layer\nUnit: 256\nactivation: ReLU" as dense1 #FFFFFF
+rectangle "Dropout Layer\nrate: 0.5" as dropout #FFFFFF
+rectangle "Dense Layer\nUnit: 2" as dense2 #FFFFFF
+rectangle "End" as end #FFFFFF
+
+start --> input
+input --> resnet
+resnet --> conv1
+conv1 --> pool1
+pool1 --> convblocks
+convblocks --> pool2
+pool2 --> flatten
+flatten --> dense1
+dense1 --> dropout
+dropout --> dense2
+dense2 --> end
+
+@enduml

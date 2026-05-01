@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Environments
+venv_fresh/
+.venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Data and model artifacts
+data_processed_original_only/
+data_processed/
+data_processed_*/
+dataset*/
+logs/
+*.npy
+*.pth
+*.pt
+
+# Backups and samples
+backups/
+test_images/
+latestSummery/
+
+# OS
+Thumbs.db
+.DS_Store

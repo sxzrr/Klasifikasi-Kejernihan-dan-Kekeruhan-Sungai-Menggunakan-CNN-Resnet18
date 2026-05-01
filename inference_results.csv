@@ -1,0 +1,8 @@
+Filename,XceptionNet_Pred,XceptionNet_Conf,ResNet18_Pred,ResNet18_Conf,Agree
+1.jpeg,Keruh (Turbid),0.7267677187919617,Jernih (Clear),0.9621537923812866,⚠️ NO
+2.jpeg,Jernih (Clear),1.0,Jernih (Clear),0.9999970197677612,✅ YES
+3.avif,Jernih (Clear),1.0,Jernih (Clear),0.988596498966217,✅ YES
+4.jpeg,Jernih (Clear),0.9997856020927429,Jernih (Clear),0.9996213912963867,✅ YES
+5.jpg,Jernih (Clear),1.0,Jernih (Clear),0.9999719858169556,✅ YES
+6.jpeg,Jernih (Clear),0.9216477274894714,Jernih (Clear),0.7336011528968811,✅ YES
+7.jpg,Keruh (Turbid),0.9999979734420776,Keruh (Turbid),0.9999986886978149,✅ YES

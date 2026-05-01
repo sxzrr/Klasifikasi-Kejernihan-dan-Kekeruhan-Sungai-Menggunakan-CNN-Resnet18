@@ -1,0 +1,20 @@
+@startuml
+!pragma useActivityDiagram
+start
+:Data Collection (233 images);
+:Preprocessing (Resize 224x224, Normalize);
+:Data Augmentation (~1000 images);
+:Train/Val/Test Split (70/15/15);
+fork
+  :Train Xception;
+  :Save Xception model;
+fork again
+  :Train ResNet18;
+  :Save ResNet18 model;
+end fork
+:Evaluate on Test Set;
+:Compare Models;
+:Inference on New Images;
+:Generate Reports & CSV;
+stop
+@enduml
