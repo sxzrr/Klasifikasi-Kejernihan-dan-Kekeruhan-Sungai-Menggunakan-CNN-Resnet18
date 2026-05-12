@@ -1,0 +1,52 @@
+@startuml
+title Tahapan Model ResNet18 (Latest)
+
+start
+:Mulai;
+:Input Dataset Sungai;
+
+:Preprocessing
+- Resize 224x224
+- Normalisasi [0,1];
+
+:Split Data 70/15/15
+(Train / Val / Test);
+
+if (Augmentasi digunakan?) then (Ya)
+  :Augmentasi (opsional);
+else (Tidak)
+  :Skip augmentasi;
+endif
+
+:Save data_processed_original_only
+(train/val/test .npy + metadata);
+
+:Load data .npy (train/val/test);
+:Normalisasi ImageNet (mean/std);
+:Konversi ke tensor PyTorch;
+:Create DataLoader;
+
+:Build ResNet18
+- Pretrained ImageNet
+- FC head: 512 -> 256 -> ReLU -> Dropout 0.5 -> 2;
+
+:Training Progressive Freeze (2 stage)
+Stage 1: FC only, lr_fc
+Stage 2: layer4 + FC, lr_layer4 + lr_fc
++ early stopping per stage
++ ReduceLROnPlateau;
+
+:Save best model + metadata;
+
+:Evaluation (test set)
+- Load model
+- Normalisasi ImageNet
+- Prediksi
+- Metrics: accuracy, precision, recall, F1, ROC-AUC
+- Confusion matrix + ROC curve
+- Save evaluation_results.json;
+
+:Hasil Klasifikasi;
+stop
+
+@enduml
